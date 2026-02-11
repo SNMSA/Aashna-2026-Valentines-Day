@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Us ❤️</title>
+
+  <style>
+    :root{
+      --bg1:#ffe6ee;
+      --bg2:#ffd1dc;
+      --accent:#ff4d6d;
+      --text:#2b2b2b;
+      --card:#ffffffd9;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow-x:hidden;
+      overflow-y:auto;
+      background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+      color: var(--text);
+    }
+
+    /* Soft vignette */
+    .vignette{
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(0,0,0,0) 55%, rgba(0,0,0,.14) 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Hearts background */
+    .heart{
+      position:absolute;
+      width:18px;
+      height:18px;
+      background:var(--accent);
+      transform:rotate(45deg);
+      opacity:.14;
+      border-radius:4px;
+      animation: floatUp linear infinite;
+      pointer-events:none;
+      z-index:1;
+    }
+    .heart::before, .heart::after{
+      content:"";
+      position:absolute;
+      width:18px;
+      height:18px;
+      background:inherit;
+      border-radius:50%;
+    }
+    .heart::before{ left:-9px; top:0; }
+    .heart::after{ left:0; top:-9px; }
+
+    @keyframes floatUp{
+      from{ transform: translateY(20vh) rotate(45deg); }
+      to{ transform: translateY(-120vh) rotate(45deg); }
+    }
+
+    /* Layout */
+    .wrap{
+      width:min(1500px, 96vw);
+      margin: 0 auto;
+      text-align:center;
+      position:relative;
+      z-index:3;
+      padding: 38px 12px 70px;
+    }
+
+    h1{
+      margin: 0 0 18px;
+      font-size: clamp(30px, 4vw, 52px);
+      text-shadow: 0 1px 0 rgba(255,255,255,.35);
+    }
+
+    /* Top 3 images (fade in together after 3s) */
+    .final-photos{
+      display:flex;
+      justify-content:center;
+      gap: 32px;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: showFinal 1s ease-out forwards;
+      animation-delay: 3s;
+    }
+
+    .final-photos img{
+      width: 360px;           /* big */
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      border-radius: 22px;
+      background: rgba(255,255,255,.92);
+      padding: 10px;
+      box-shadow: 0 26px 70px rgba(0,0,0,.28);
+      image-orientation: from-image;
+      display:block;
+    }
+
+    @media (max-width: 900px){
+      .final-photos{ gap: 18px; }
+      .final-photos img{ width: 240px; }
+    }
+
+    @media (max-width: 520px){
+      .final-photos{
+        flex-direction: column;
+        gap: 22px;
+        align-items:center;
+      }
+      .final-photos img{
+        width: 86vw;
+        max-width: 360px;
+      }
+    }
+
+    @keyframes showFinal{
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Summary text (your requested “photo story”) */
+    .summary{
+      margin: 26px auto 26px;
+      width: min(980px, 92vw);
+      background: var(--card);
+      border-radius: 18px;
+      padding: 18px 18px;
+      box-shadow: 0 16px 45px rgba(0,0,0,.16);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: showFinal 1s ease-out forwards;
+      animation-delay: 3.35s;
+      line-height: 1.65;
+      font-size: clamp(15px, 2.2vw, 18px);
+      backdrop-filter: blur(8px);
+    }
+
+    .summary .small{
+      display:block;
+      margin-top: 10px;
+      opacity: .9;
+      font-size: .98em;
+    }
+
+    /* Collage section */
+    .collage-title{
+      margin: 26px 0 14px;
+      font-size: clamp(18px, 2.6vw, 22px);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: showFinal 1s ease-out forwards;
+      animation-delay: 3.6s;
+    }
+
+    .collage-card{
+      width: min(1200px, 94vw);
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 18px 55px rgba(0,0,0,.18);
+      backdrop-filter: blur(8px);
+
+      opacity: 0;
+      transform: translateY(10px);
+      animation: showFinal 1s ease-out forwards;
+      animation-delay: 3.75s;
+    }
+
+    .collage{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .thumb{
+      width:100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 14px;
+      background: rgba(255,255,255,.75);
+      box-shadow: 0 10px 26px rgba(0,0,0,.12);
+      display:block;
+      cursor: pointer;
+      transition: transform .12s ease;
+      image-orientation: from-image;
+    }
+    .thumb:active{ transform: scale(.98); }
+
+    /* Lightbox */
+    .lightbox{
+      position: fixed;
+      inset: 0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.55);
+      z-index: 999;
+      padding: 18px;
+    }
+    .lightbox.open{ display:flex; }
+    .lightbox-inner{
+      max-width: min(1100px, 94vw);
+      max-height: min(86vh, 900px);
+      background: rgba(255,255,255,.92);
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: 0 26px 80px rgba(0,0,0,.35);
+    }
+    .lightbox-inner img{
+      width:100%;
+      height:100%;
+      max-height: calc(86vh - 40px);
+      object-fit: contain;
+      border-radius: 14px;
+      display:block;
+      image-orientation: from-image;
+    }
+    .hint{
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: .8;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="vignette"></div>
+
+  <div class="wrap">
+    <h1>My Valentine ❤️</h1>
+
+    <!-- Big 3 images -->
+    <div class="final-photos">
+      <img src="final1.jpg" alt="Us ❤️">
+      <img src="final2.jpg" alt="Us ❤️">
+      <img src="final3.jpg" alt="Us ❤️">
+    </div>
+
+    <!-- Summary (requested) -->
+    <div class="summary">
+      From stolen glances and first dates, to growing together through every chapter, to choosing each other — again and again.<br>
+      These moments tell our story: where we began, how far we’ve come, and the love that keeps blooming with every year.
+      <span class="small"><strong>My wife. My Valentine. Always.</strong> 💍❤️</span>
+    </div>
+
+    <!-- Collage -->
+    <div class="collage-title">A little album of us 💗</div>
+
+    <div class="collage-card">
+      <div id="collage" class="collage"></div>
+      <div class="hint">Tip: tap any photo to view it bigger.</div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true">
+    <div class="lightbox-inner">
+      <img id="lightboxImg" alt="Photo">
+    </div>
+  </div>
+
+  <script>
+    // Floating hearts background
+    function makeHeart(){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.style.left = Math.random()*100 + 'vw';
+      h.style.animationDuration = (7 + Math.random()*8) + 's';
+      h.style.opacity = (0.06 + Math.random()*0.16);
+      h.style.transform = 'rotate(45deg) scale(' + (0.7 + Math.random()*1.5) + ')';
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(), 16000);
+    }
+    setInterval(makeHeart, 520);
+    for (let i = 0; i < 10; i++) setTimeout(makeHeart, i * 220);
+
+    // ----- Collage of ALL photos in the album -----
+    // This will automatically try:
+    //   us1.jpg ... us30.jpg
+    //   final1.jpg ... final10.jpg
+    // Anything that exists will be added; missing files are skipped.
+    const collageEl = document.getElementById("collage");
+
+    function addToCollage(src){
+      const img = new Image();
+      img.onload = () => {
+        const thumb = document.createElement("img");
+        thumb.src = src;
+        thumb.alt = "Memory ❤️";
+        thumb.className = "thumb";
+        thumb.addEventListener("click", () => openLightbox(src));
+        collageEl.appendChild(thumb);
+      };
+      img.onerror = () => {}; // skip missing files silently
+      img.src = src;
+    }
+
+    // Try finals first (so the “end” story shows first in the collage)
+    for (let i = 1; i <= 10; i++) addToCollage(`final${i}.jpg`);
+
+    // Then try all "us" photos
+    for (let i = 1; i <= 30; i++) addToCollage(`us${i}.jpg`);
+
+    // Lightbox
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+
+    function openLightbox(src){
+      lightboxImg.src = src;
+      lightbox.classList.add("open");
+    }
+    function closeLightbox(){
+      lightbox.classList.remove("open");
+      lightboxImg.src = "";
+    }
+
+    lightbox.addEventListener("click", closeLightbox);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeLightbox();
+    });
+  </script>
+</body>
+</html>
