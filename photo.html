@@ -13,7 +13,6 @@
       --text:#2b2b2b;
       --card:#ffffffd9;
     }
-
     *{ box-sizing:border-box; }
 
     body{
@@ -21,12 +20,10 @@
       min-height:100vh;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       overflow-x:hidden;
-      overflow-y:auto;
       background: radial-gradient(circle at top, var(--bg1), var(--bg2));
       color: var(--text);
     }
 
-    /* Soft vignette */
     .vignette{
       position: fixed;
       inset: 0;
@@ -35,7 +32,7 @@
       z-index: 2;
     }
 
-    /* Hearts background */
+    /* Hearts */
     .heart{
       position:absolute;
       width:18px;
@@ -64,7 +61,6 @@
       to{ transform: translateY(-120vh) rotate(45deg); }
     }
 
-    /* Layout */
     .wrap{
       width:min(1500px, 96vw);
       margin: 0 auto;
@@ -80,7 +76,6 @@
       text-shadow: 0 1px 0 rgba(255,255,255,.35);
     }
 
-    /* Top 3 images (fade in together after 3s) */
     .final-photos{
       display:flex;
       justify-content:center;
@@ -88,18 +83,17 @@
       opacity: 0;
       transform: translateY(10px);
       animation: showFinal 1s ease-out forwards;
-      animation-delay: 3s;
+      animation-delay: 1.2s;
     }
 
     .final-photos img{
-      width: 360px;           /* big */
+      width: 360px;
       aspect-ratio: 3 / 4;
       object-fit: cover;
       border-radius: 22px;
       background: rgba(255,255,255,.92);
       padding: 10px;
       box-shadow: 0 26px 70px rgba(0,0,0,.28);
-      image-orientation: from-image;
       display:block;
     }
 
@@ -124,21 +118,21 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Summary text (your requested “photo story”) */
     .summary{
-      margin: 26px auto 26px;
+      margin: 26px auto 18px;
       width: min(980px, 92vw);
       background: var(--card);
       border-radius: 18px;
-      padding: 18px 18px;
+      padding: 18px;
       box-shadow: 0 16px 45px rgba(0,0,0,.16);
-      opacity: 0;
-      transform: translateY(10px);
-      animation: showFinal 1s ease-out forwards;
-      animation-delay: 3.35s;
       line-height: 1.65;
       font-size: clamp(15px, 2.2vw, 18px);
       backdrop-filter: blur(8px);
+
+      opacity: 0;
+      transform: translateY(10px);
+      animation: showFinal 1s ease-out forwards;
+      animation-delay: 1.45s;
     }
 
     .summary .small{
@@ -148,14 +142,10 @@
       font-size: .98em;
     }
 
-    /* Collage section */
     .collage-title{
-      margin: 26px 0 14px;
+      margin: 22px 0 12px;
       font-size: clamp(18px, 2.6vw, 22px);
-      opacity: 0;
-      transform: translateY(10px);
-      animation: showFinal 1s ease-out forwards;
-      animation-delay: 3.6s;
+      opacity: .92;
     }
 
     .collage-card{
@@ -166,11 +156,7 @@
       padding: 16px;
       box-shadow: 0 18px 55px rgba(0,0,0,.18);
       backdrop-filter: blur(8px);
-
-      opacity: 0;
-      transform: translateY(10px);
-      animation: showFinal 1s ease-out forwards;
-      animation-delay: 3.75s;
+      text-align:left;
     }
 
     .collage{
@@ -189,9 +175,14 @@
       display:block;
       cursor: pointer;
       transition: transform .12s ease;
-      image-orientation: from-image;
     }
     .thumb:active{ transform: scale(.98); }
+
+    .hint{
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: .8;
+    }
 
     /* Lightbox */
     .lightbox{
@@ -220,12 +211,21 @@
       object-fit: contain;
       border-radius: 14px;
       display:block;
-      image-orientation: from-image;
     }
-    .hint{
-      margin-top: 10px;
-      font-size: 14px;
-      opacity: .8;
+
+    /* Music button */
+    #musicBtn{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:1000;
+      border:none;
+      border-radius:999px;
+      padding:12px 16px;
+      background:rgba(255,255,255,.85);
+      box-shadow:0 12px 28px rgba(0,0,0,.18);
+      cursor:pointer;
+      font-size:14px;
     }
   </style>
 </head>
@@ -233,33 +233,36 @@
 <body>
   <div class="vignette"></div>
 
+  <!-- Music (make sure your file is really song.mp3) -->
+  <button id="musicBtn">Play music 🎵</button>
+  <audio id="bgMusic" preload="auto" loop>
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+
   <div class="wrap">
     <h1>My Valentine ❤️</h1>
 
-    <!-- Big 3 images -->
+    <!-- Use filenames WITHOUT .jpg -->
     <div class="final-photos">
-      <img src="final1.jpg" alt="Us ❤️">
-      <img src="final2.jpg" alt="Us ❤️">
-      <img src="final3.jpg" alt="Us ❤️">
+      <img src="final1" alt="Us ❤️">
+      <img src="final2" alt="Us ❤️">
+      <img src="final3" alt="Us ❤️">
     </div>
 
-    <!-- Summary (requested) -->
     <div class="summary">
       From stolen glances and first dates, to growing together through every chapter, to choosing each other — again and again.<br>
       These moments tell our story: where we began, how far we’ve come, and the love that keeps blooming with every year.
       <span class="small"><strong>My wife. My Valentine. Always.</strong> 💍❤️</span>
     </div>
 
-    <!-- Collage -->
     <div class="collage-title">A little album of us 💗</div>
 
     <div class="collage-card">
       <div id="collage" class="collage"></div>
-      <div class="hint">Tip: tap any photo to view it bigger.</div>
+      <div class="hint">Tap any photo to view it bigger.</div>
     </div>
   </div>
 
-  <!-- Lightbox -->
   <div id="lightbox" class="lightbox" role="dialog" aria-modal="true">
     <div class="lightbox-inner">
       <img id="lightboxImg" alt="Photo">
@@ -267,7 +270,7 @@
   </div>
 
   <script>
-    // Floating hearts background
+    // Hearts
     function makeHeart(){
       const h = document.createElement('div');
       h.className = 'heart';
@@ -281,13 +284,8 @@
     setInterval(makeHeart, 520);
     for (let i = 0; i < 10; i++) setTimeout(makeHeart, i * 220);
 
-    // ----- Collage of ALL photos in the album -----
-    // This will automatically try:
-    //   us1.jpg ... us30.jpg
-    //   final1.jpg ... final10.jpg
-    // Anything that exists will be added; missing files are skipped.
+    // Collage: YOUR exact set
     const collageEl = document.getElementById("collage");
-
     function addToCollage(src){
       const img = new Image();
       img.onload = () => {
@@ -298,20 +296,21 @@
         thumb.addEventListener("click", () => openLightbox(src));
         collageEl.appendChild(thumb);
       };
-      img.onerror = () => {}; // skip missing files silently
+      img.onerror = () => {};
       img.src = src;
     }
 
-    // Try finals first (so the “end” story shows first in the collage)
-    for (let i = 1; i <= 10; i++) addToCollage(`final${i}.jpg`);
+    // final1..final3
+    addToCollage("final1");
+    addToCollage("final2");
+    addToCollage("final3");
 
-    // Then try all "us" photos
-    for (let i = 1; i <= 30; i++) addToCollage(`us${i}.jpg`);
+    // us1..us26 (based on your screenshot)
+    for (let i = 1; i <= 26; i++) addToCollage(`us${i}`);
 
     // Lightbox
     const lightbox = document.getElementById("lightbox");
     const lightboxImg = document.getElementById("lightboxImg");
-
     function openLightbox(src){
       lightboxImg.src = src;
       lightbox.classList.add("open");
@@ -320,10 +319,53 @@
       lightbox.classList.remove("open");
       lightboxImg.src = "";
     }
-
     lightbox.addEventListener("click", closeLightbox);
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeLightbox();
+    });
+
+    // Music autoplay attempt + fallback on first gesture
+    const music = document.getElementById("bgMusic");
+    const musicBtn = document.getElementById("musicBtn");
+    let playing = false;
+
+    async function tryAutoplay(){
+      try{
+        await music.play();
+        playing = true;
+        musicBtn.textContent = "Pause music ⏸️";
+      }catch(e){
+        musicBtn.textContent = "Play music 🎵";
+      }
+    }
+
+    window.addEventListener("load", tryAutoplay);
+
+    let firstGesture = false;
+    function onFirstGesture(){
+      if(firstGesture) return;
+      firstGesture = true;
+      tryAutoplay();
+      window.removeEventListener("pointerdown", onFirstGesture);
+      window.removeEventListener("touchstart", onFirstGesture);
+    }
+    window.addEventListener("pointerdown", onFirstGesture);
+    window.addEventListener("touchstart", onFirstGesture);
+
+    musicBtn.addEventListener("click", async () => {
+      try{
+        if(!playing){
+          await music.play();
+          playing = true;
+          musicBtn.textContent = "Pause music ⏸️";
+        }else{
+          music.pause();
+          playing = false;
+          musicBtn.textContent = "Play music 🎵";
+        }
+      }catch(e){
+        musicBtn.textContent = "Tap to play 🎵";
+      }
     });
   </script>
 </body>

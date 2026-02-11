@@ -27,7 +27,6 @@
       background: radial-gradient(circle at top, var(--bg1), var(--bg2));
     }
 
-    /* ================= CARD ================= */
     .card{
       width:min(760px, 92vw);
       background: var(--card);
@@ -72,7 +71,7 @@
     .yes{ background: var(--accent); color:white; }
     .yes-million{ background:white; color:var(--accent); border:2px solid var(--accent); }
 
-    /* ================= HEARTS ================= */
+    /* Hearts */
     .heart{
       position:absolute;
       width:18px;
@@ -101,7 +100,7 @@
       to{ transform: translateY(-120vh) rotate(45deg); }
     }
 
-    /* ================= FLOATING PHOTOS ================= */
+    /* Floating photos */
     .photo-float{
       position:absolute;
       width:300px;
@@ -135,7 +134,7 @@
       .photo-float{ width:220px; }
     }
 
-    /* ================= MUSIC BUTTON ================= */
+    /* Music button */
     #musicBtn{
       position:fixed;
       right:18px;
@@ -177,9 +176,7 @@
   </audio>
 
   <script>
-    function goToPhoto(){
-      window.location.href = "photo.html";
-    }
+    function goToPhoto(){ window.location.href = "photo.html"; }
 
     /* Hearts */
     function makeHeart(){
@@ -194,15 +191,37 @@
     }
     setInterval(makeHeart, 520);
 
-    /* ================= GUARANTEED 3 PHOTO SLOTS ================= */
-    const PHOTO_FILES = ["us1.jpg","us2.jpg","us3.jpg"];
+    /* ================= PHOTO ROTATION: us1.jpg → us26.jpg ================= */
+    const PHOTO_COUNT = 26;
+    let deck = [];
+    let deckIndex = 0;
+
+    function buildDeck(){
+      deck = Array.from({length: PHOTO_COUNT}, (_, i) => `us${i+1}.jpg`);
+      // shuffle deck
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      deckIndex = 0;
+    }
+
+    function nextPhoto(){
+      if (deck.length === 0 || deckIndex >= deck.length) buildDeck();
+      return deck[deckIndex++];
+    }
+
+    // 3 fixed slots (always visible, no overlap)
     const SLOTS = [
       { left: "4vw",  top: "10vh" },
       { left: "4vw",  top: "55vh" },
       { left: "74vw", top: "18vh" }
     ];
+
     const LIFE = 3000;
     let slotIndex = 0;
+
+    buildDeck();
 
     function makePhoto(){
       if(document.querySelectorAll('.photo-float').length >= 3) return;
@@ -217,9 +236,13 @@
       wrap.style.top  = slot.top;
 
       const img = document.createElement('img');
-      img.src = PHOTO_FILES[Math.floor(Math.random() * PHOTO_FILES.length)];
+      img.src = nextPhoto();
       img.alt = "Us ❤️";
-      img.onerror = () => wrap.remove();
+
+      // If one image fails to load, immediately try the next one (so it doesn't get stuck)
+      img.onerror = () => {
+        img.src = nextPhoto();
+      };
 
       wrap.appendChild(img);
       document.body.appendChild(wrap);
@@ -227,10 +250,11 @@
       setTimeout(()=>wrap.remove(), LIFE + 150);
     }
 
+    // Spawn 3 immediately, then keep cycling
+    for(let i=0;i<3;i++) setTimeout(makePhoto, i * 250);
     setInterval(makePhoto, 1100);
-    for(let i=0;i<3;i++) setTimeout(makePhoto, i * 300);
 
-    /* ================= MUSIC LOGIC ================= */
+    /* ================= MUSIC ================= */
     const music = document.getElementById("bgMusic");
     const musicBtn = document.getElementById("musicBtn");
     let playing = false;
